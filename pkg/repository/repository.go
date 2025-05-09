@@ -53,8 +53,8 @@ func NewRepository(db *sqlx.DB, redis *redis.Client) *Repository {
 	return &Repository{
 		Authorization: NewAuthPostgres(db),
 		Item:          NewTechItemPostgres(db, redis),
-		WishList:      NewWishlistPostgres(db),
-		Cart:          NewTechCartPostgres(db),
+		WishList:      NewWishlistPostgres(db, redis),
+		Cart:          NewTechCartPostgres(db, redis),
 		Buy:           NewTechBuyPostgres(db),
 		Order:         NewTechOrderPostgres(db),
 	}

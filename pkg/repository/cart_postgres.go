@@ -2,16 +2,21 @@ package repository
 
 import (
 	"TechShop/models"
+	"context"
+	"encoding/json"
 	"fmt"
+	"github.com/go-redis/redis/v8"
 	"github.com/jmoiron/sqlx"
+	"time"
 )
 
 type CartPostgres struct {
-	db *sqlx.DB
+	db    *sqlx.DB
+	redis *redis.Client
 }
 
-func NewTechCartPostgres(db *sqlx.DB) *CartPostgres {
-	return &CartPostgres{db: db}
+func NewTechCartPostgres(db *sqlx.DB, client *redis.Client) *CartPostgres {
+	return &CartPostgres{db: db, redis: client}
 }
 func (r *CartPostgres) AddToCart(userId, itemId string, countItem int) (string, error) {
 	var id string
@@ -20,10 +25,23 @@ func (r *CartPostgres) AddToCart(userId, itemId string, countItem int) (string, 
 	if err != nil {
 		return "", err
 	}
+	cacheKey := fmt.Sprintf("cart:user:%s", userId)
+	_ = r.redis.Del(context.Background(), cacheKey).Err()
+
 	return id, err
 }
 func (r *CartPostgres) GetCart(userId string) ([]models.Cart, error) {
 	var cart []models.Cart
+
+	cache := fmt.Sprintf("cart:user:%s", userId)
+	cachedData, err := r.redis.Get(context.Background(), cache).Result()
+	if err == nil {
+		err := json.Unmarshal([]byte(cachedData), &cart)
+		if err == nil {
+			return cart, nil
+		}
+	}
+
 	query := fmt.Sprintf(`
 		SELECT 
 			ci.id AS cart_id,
@@ -45,14 +63,27 @@ func (r *CartPostgres) GetCart(userId string) ([]models.Cart, error) {
 		WHERE ci.user_id = $1
 	`, cartTable, itemsTable)
 
-	err := r.db.Select(&cart, query, userId)
+	err = r.db.Select(&cart, query, userId)
 	if err != nil {
 		return nil, err
+	}
+	dataToCache, err := json.Marshal(cart)
+	if err == nil {
+		_ = r.redis.Set(context.Background(), cache, dataToCache, 10*time.Minute).Err()
 	}
 	return cart, err
 }
 func (r *CartPostgres) GetCartItemById(userId, cartId string) (models.Cart, error) {
 	var cart models.Cart
+	ctx := context.Background()
+	cacheKey := fmt.Sprintf("cart_item:user:%s:%s", userId, cartId)
+	cachedData, err := r.redis.Get(ctx, cacheKey).Result()
+	if err == nil {
+		if err := json.Unmarshal([]byte(cachedData), &cart); err == nil {
+			return cart, nil
+		}
+	}
+
 	query := fmt.Sprintf(`
 	SELECT
 		ci.id AS cart_id,
@@ -73,9 +104,13 @@ func (r *CartPostgres) GetCartItemById(userId, cartId string) (models.Cart, erro
 	INNER JOIN %s i ON ci.item_id = i.id
 	WHERE ci.user_id = $1 AND ci.id = $2
 	`, cartTable, itemsTable)
-	err := r.db.Get(&cart, query, userId, cartId)
+	err = r.db.Get(&cart, query, userId, cartId)
 	if err != nil {
 		return cart, err
+	}
+	dataToCache, err := json.Marshal(cart)
+	if err == nil {
+		_ = r.redis.Set(ctx, cacheKey, dataToCache, 10*time.Minute).Err()
 	}
 	return cart, err
 }
@@ -85,6 +120,10 @@ func (r *CartPostgres) Update(userId, cartId string, countItem int) error {
 	if err != nil {
 		return err
 	}
+	_ = r.redis.Del(context.Background(),
+		fmt.Sprintf("cart:user:%s", userId),
+		fmt.Sprintf("cart_item:user:%s:%s", userId, cartId),
+	).Err()
 	return nil
 }
 func (r *CartPostgres) Delete(userId, cartId string) error {
@@ -93,5 +132,9 @@ func (r *CartPostgres) Delete(userId, cartId string) error {
 	if err != nil {
 		return err
 	}
+	_ = r.redis.Del(context.Background(),
+		fmt.Sprintf("cart:user:%s", userId),
+		fmt.Sprintf("cart_item:user:%s:%s", userId, cartId),
+	).Err()
 	return nil
 }

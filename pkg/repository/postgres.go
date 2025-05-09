@@ -8,7 +8,7 @@ import (
 
 const (
 	usersTable    = "users"
-	wishlistTable = "wishlists"
+	wishlistTable = "wishlist"
 	cartTable     = "cart_items"
 	ordersTable   = "orders"
 	itemsTable    = "items"
