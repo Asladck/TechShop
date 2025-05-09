@@ -3,6 +3,7 @@ package main
 import (
 	tech "TechShop"
 	"TechShop/pkg/handler"
+	"TechShop/pkg/redis"
 	"TechShop/pkg/repository"
 	"TechShop/pkg/service"
 	"github.com/joho/godotenv"
@@ -29,10 +30,11 @@ func main() {
 		DBName:   viper.GetString("db.dbname"),
 		SSLMode:  viper.GetString("db.sslmode"),
 	})
+	red := redis.InitRedis()
 	if err != nil {
 		logrus.Fatalf("failed to initializate a db: %s", err.Error())
 	}
-	repos := repository.NewRepository(db)
+	repos := repository.NewRepository(db, red)
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
 	srv := new(tech.Server)

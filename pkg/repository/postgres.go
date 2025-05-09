@@ -11,7 +11,6 @@ const (
 	wishlistTable = "wishlists"
 	cartTable     = "cart_items"
 	ordersTable   = "orders"
-	ordersItems   = "order_items"
 	itemsTable    = "items"
 )
 

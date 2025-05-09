@@ -2,6 +2,7 @@ package repository
 
 import (
 	"TechShop/models"
+	"github.com/go-redis/redis/v8"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -48,10 +49,10 @@ type Repository struct {
 	Buy
 }
 
-func NewRepository(db *sqlx.DB) *Repository {
+func NewRepository(db *sqlx.DB, redis *redis.Client) *Repository {
 	return &Repository{
 		Authorization: NewAuthPostgres(db),
-		Item:          NewTechItemPostgres(db),
+		Item:          NewTechItemPostgres(db, redis),
 		WishList:      NewWishlistPostgres(db),
 		Cart:          NewTechCartPostgres(db),
 		Buy:           NewTechBuyPostgres(db),
