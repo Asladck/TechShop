@@ -1021,6 +1021,7 @@
     },
     "definitions": {
         "handler.Error": {
+            "description": "API error information",
             "type": "object",
             "properties": {
                 "message": {
@@ -1029,6 +1030,7 @@
             }
         },
         "handler.GetAllCartItemResponse": {
+            "description": "Response with list of cart items including product details",
             "type": "object",
             "properties": {
                 "data": {
@@ -1040,6 +1042,7 @@
             }
         },
         "handler.GetCartItemResponse": {
+            "description": "Response with single cart item details",
             "type": "object",
             "properties": {
                 "data": {
@@ -1048,6 +1051,7 @@
             }
         },
         "handler.OrderIdResponse": {
+            "description": "Response containing list of user's orders",
             "type": "object",
             "properties": {
                 "data": {
@@ -1056,6 +1060,7 @@
             }
         },
         "handler.getAllItemResponse": {
+            "description": "Response containing list of all products",
             "type": "object",
             "properties": {
                 "data": {
@@ -1067,6 +1072,7 @@
             }
         },
         "handler.getItemResponse": {
+            "description": "Response containing detailed product information",
             "type": "object",
             "properties": {
                 "data": {
@@ -1075,6 +1081,7 @@
             }
         },
         "handler.getOrdersResponse": {
+            "description": "Response containing order details",
             "type": "object",
             "properties": {
                 "data": {
@@ -1086,6 +1093,7 @@
             }
         },
         "handler.getWishItemsResponse": {
+            "description": "Response containing list of wishlist products",
             "type": "object",
             "properties": {
                 "data": {
@@ -1097,6 +1105,7 @@
             }
         },
         "handler.refreshInput": {
+            "description": "Refresh token for getting new access token",
             "type": "object",
             "required": [
                 "refresh_token"
@@ -1108,6 +1117,7 @@
             }
         },
         "handler.signInInput": {
+            "description": "Credentials for authentication",
             "type": "object",
             "required": [
                 "email",
@@ -1127,6 +1137,7 @@
             }
         },
         "handler.statusFloat": {
+            "description": "Numeric status response",
             "type": "object",
             "properties": {
                 "status": {
@@ -1135,6 +1146,7 @@
             }
         },
         "handler.statusResponse": {
+            "description": "Basic status response",
             "type": "object",
             "properties": {
                 "status": {
@@ -1143,6 +1155,7 @@
             }
         },
         "models.Cart": {
+            "description": "Full shopping cart information including product details",
             "type": "object",
             "required": [
                 "item_count",
@@ -1196,6 +1209,7 @@
             }
         },
         "models.CartItem": {
+            "description": "Shopping cart item information",
             "type": "object",
             "required": [
                 "item_count",
@@ -1223,6 +1237,7 @@
             }
         },
         "models.CartUpdate": {
+            "description": "Data structure for updating item quantity in cart",
             "type": "object",
             "required": [
                 "item_count"
@@ -1234,6 +1249,7 @@
             }
         },
         "models.Item": {
+            "description": "Product information",
             "type": "object",
             "required": [
                 "price",
@@ -1267,6 +1283,7 @@
             }
         },
         "models.Order": {
+            "description": "Order information with status",
             "type": "object",
             "properties": {
                 "created_at": {
@@ -1297,6 +1314,7 @@
             }
         },
         "models.Stock": {
+            "description": "Product stock information for updates",
             "type": "object",
             "required": [
                 "stock"
@@ -1308,6 +1326,7 @@
             }
         },
         "models.User": {
+            "description": "User account information",
             "type": "object",
             "required": [
                 "email",

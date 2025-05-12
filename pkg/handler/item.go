@@ -6,6 +6,9 @@ import (
 	"net/http"
 )
 
+// GetAllItemsResponse represents response for listing all products
+// @Description Response containing list of all products
+// @Success 200 {object} getAllItemResponse
 type getAllItemResponse struct {
 	Data []models.Item `json:"data"`
 }
@@ -28,6 +31,9 @@ func (h *Handler) getItems(c *gin.Context) {
 	})
 }
 
+// GetItemResponse represents response for single product
+// @Description Response containing detailed product information
+// @Success 200 {object} getItemResponse
 type getItemResponse struct {
 	Data models.Item `json:"data"`
 }

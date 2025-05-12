@@ -6,6 +6,9 @@ import (
 	"net/http"
 )
 
+// GetWishlistItemsResponse represents response for wishlist items
+// @Description Response containing list of wishlist products
+// @Success 200 {object} getWishItemsResponse
 type getWishItemsResponse struct {
 	Data []models.Item
 }

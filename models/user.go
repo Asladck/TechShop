@@ -2,6 +2,8 @@ package models
 
 import "time"
 
+// User represents system user account
+// @Description User account information
 type User struct {
 	Id        string    `json:"-" db:"id"`
 	Email     string    `json:"email" binding:"required"`

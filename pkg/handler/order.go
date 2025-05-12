@@ -6,6 +6,9 @@ import (
 	"net/http"
 )
 
+// OrderIDResponse represents response for order operations
+// @Description Response containing order details
+// @Success 200 {object} OrderIdResponse
 type getOrdersResponse struct {
 	Data []models.Order `json:"data"`
 }
@@ -92,6 +95,9 @@ func (h *Handler) createOrderFromCart(c *gin.Context) {
 	})
 }
 
+// GetOrdersResponse represents response for user's orders list
+// @Description Response containing list of user's orders
+// @Success 200 {object} getOrdersResponse
 type OrderIdResponse struct {
 	Data models.Order `json:"data"`
 }

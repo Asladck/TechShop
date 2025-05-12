@@ -2,6 +2,8 @@ package models
 
 import "time"
 
+// Order represents customer order
+// @Description Order information with status
 type Order struct {
 	Id        string    `json:"id" db:"id"`
 	UserID    string    `json:"user_id" db:"user_id"`
@@ -12,6 +14,9 @@ type Order struct {
 	CreatedAt time.Time `json:"created_at,omitempty" db:"created_at"`
 	UpdatedAt time.Time `json:"updated_at,omitempty" db:"updated_at"`
 }
+
+// OrderItem represents item within an order
+// @Description Ordered product with price snapshot
 type OrderItem struct {
 	Id              string  `json:"id" db:"id"`
 	OrderID         string  `json:"order_id" db:"order_id"`

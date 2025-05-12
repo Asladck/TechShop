@@ -2,6 +2,8 @@ package models
 
 import "time"
 
+// Wishlist represents user's wishlist item
+// @Description Product saved in user's wishlist
 type Wishlist struct {
 	Id        string    `json:"id" db:"id"`
 	UserID    string    `json:"user_id" db:"user_id"`

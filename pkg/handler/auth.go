@@ -32,6 +32,8 @@ func (h *Handler) signUp(c *gin.Context) {
 	})
 }
 
+// Sign-in request
+// @Description Credentials for authentication
 type signInInput struct {
 	Email    string `json:"email" binding:"required"`
 	Username string `json:"username" binding:"required"`
@@ -66,6 +68,8 @@ func (h *Handler) signIn(c *gin.Context) {
 	})
 }
 
+// Refresh token request
+// @Description Refresh token for getting new access token
 type refreshInput struct {
 	RefreshToken string `json:"refresh_token" binding:"required"`
 }

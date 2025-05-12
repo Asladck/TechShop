@@ -1027,6 +1027,7 @@ const docTemplate = `{
     },
     "definitions": {
         "handler.Error": {
+            "description": "API error information",
             "type": "object",
             "properties": {
                 "message": {
@@ -1035,6 +1036,7 @@ const docTemplate = `{
             }
         },
         "handler.GetAllCartItemResponse": {
+            "description": "Response with list of cart items including product details",
             "type": "object",
             "properties": {
                 "data": {
@@ -1046,6 +1048,7 @@ const docTemplate = `{
             }
         },
         "handler.GetCartItemResponse": {
+            "description": "Response with single cart item details",
             "type": "object",
             "properties": {
                 "data": {
@@ -1054,6 +1057,7 @@ const docTemplate = `{
             }
         },
         "handler.OrderIdResponse": {
+            "description": "Response containing list of user's orders",
             "type": "object",
             "properties": {
                 "data": {
@@ -1062,6 +1066,7 @@ const docTemplate = `{
             }
         },
         "handler.getAllItemResponse": {
+            "description": "Response containing list of all products",
             "type": "object",
             "properties": {
                 "data": {
@@ -1073,6 +1078,7 @@ const docTemplate = `{
             }
         },
         "handler.getItemResponse": {
+            "description": "Response containing detailed product information",
             "type": "object",
             "properties": {
                 "data": {
@@ -1081,6 +1087,7 @@ const docTemplate = `{
             }
         },
         "handler.getOrdersResponse": {
+            "description": "Response containing order details",
             "type": "object",
             "properties": {
                 "data": {
@@ -1092,6 +1099,7 @@ const docTemplate = `{
             }
         },
         "handler.getWishItemsResponse": {
+            "description": "Response containing list of wishlist products",
             "type": "object",
             "properties": {
                 "data": {
@@ -1103,6 +1111,7 @@ const docTemplate = `{
             }
         },
         "handler.refreshInput": {
+            "description": "Refresh token for getting new access token",
             "type": "object",
             "required": [
                 "refresh_token"
@@ -1114,6 +1123,7 @@ const docTemplate = `{
             }
         },
         "handler.signInInput": {
+            "description": "Credentials for authentication",
             "type": "object",
             "required": [
                 "email",
@@ -1133,6 +1143,7 @@ const docTemplate = `{
             }
         },
         "handler.statusFloat": {
+            "description": "Numeric status response",
             "type": "object",
             "properties": {
                 "status": {
@@ -1141,6 +1152,7 @@ const docTemplate = `{
             }
         },
         "handler.statusResponse": {
+            "description": "Basic status response",
             "type": "object",
             "properties": {
                 "status": {
@@ -1149,6 +1161,7 @@ const docTemplate = `{
             }
         },
         "models.Cart": {
+            "description": "Full shopping cart information including product details",
             "type": "object",
             "required": [
                 "item_count",
@@ -1202,6 +1215,7 @@ const docTemplate = `{
             }
         },
         "models.CartItem": {
+            "description": "Shopping cart item information",
             "type": "object",
             "required": [
                 "item_count",
@@ -1229,6 +1243,7 @@ const docTemplate = `{
             }
         },
         "models.CartUpdate": {
+            "description": "Data structure for updating item quantity in cart",
             "type": "object",
             "required": [
                 "item_count"
@@ -1240,6 +1255,7 @@ const docTemplate = `{
             }
         },
         "models.Item": {
+            "description": "Product information",
             "type": "object",
             "required": [
                 "price",
@@ -1273,6 +1289,7 @@ const docTemplate = `{
             }
         },
         "models.Order": {
+            "description": "Order information with status",
             "type": "object",
             "properties": {
                 "created_at": {
@@ -1303,6 +1320,7 @@ const docTemplate = `{
             }
         },
         "models.Stock": {
+            "description": "Product stock information for updates",
             "type": "object",
             "required": [
                 "stock"
@@ -1314,6 +1332,7 @@ const docTemplate = `{
             }
         },
         "models.User": {
+            "description": "User account information",
             "type": "object",
             "required": [
                 "email",
