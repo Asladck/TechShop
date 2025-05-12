@@ -14,6 +14,16 @@ import (
 	"syscall"
 )
 
+// @title           TechShop API
+// @version         1.0
+// @description     Документация API для интернет-магазина TechShop
+// @host            localhost:8080
+// @BasePath        /
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and your API token.
+
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 	if err := initConfig(); err != nil {

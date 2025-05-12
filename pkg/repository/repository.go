@@ -55,7 +55,7 @@ func NewRepository(db *sqlx.DB, redis *redis.Client) *Repository {
 		Item:          NewTechItemPostgres(db, redis),
 		WishList:      NewWishlistPostgres(db, redis),
 		Cart:          NewTechCartPostgres(db, redis),
-		Buy:           NewTechBuyPostgres(db),
-		Order:         NewTechOrderPostgres(db),
+		Buy:           NewTechBuyPostgres(db, redis),
+		Order:         NewTechOrderPostgres(db, redis),
 	}
 }

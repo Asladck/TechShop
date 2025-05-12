@@ -6,6 +6,19 @@ import (
 	"net/http"
 )
 
+// @Summary Add item to cart
+// @Security ApiKeyAuth
+// @Tags cart
+// @Description Добавить товар в корзину пользователя
+// @ID add-to-cart
+// @Accept  json
+// @Produce  json
+// @Param input body models.CartItem true "item info"
+// @Success 200 {object} map[string]interface{} "Returns cart ID"
+// @Failure 400 {object} handler.Error
+// @Failure 401 {object} handler.Error
+// @Failure 500 {object} handler.Error
+// @Router /api/cart [post]
 func (h *Handler) addToCart(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {
@@ -27,6 +40,17 @@ func (h *Handler) addToCart(c *gin.Context) {
 	})
 }
 
+// @Summary Get cart item by ID
+// @Security ApiKeyAuth
+// @Tags cart
+// @Description Получить конкретный товар из корзины
+// @ID get-cart-item
+// @Produce  json
+// @Param id path string true "Cart Item ID"
+// @Success 200 {object} GetCartItemResponse
+// @Failure 401 {object} handler.Error
+// @Failure 500 {object} handler.Error
+// @Router /api/cart/{id} [get]
 func (h *Handler) getCartItemById(c *gin.Context) {
 	var cart models.Cart
 	userId, err := getUserId(c)
@@ -45,6 +69,16 @@ func (h *Handler) getCartItemById(c *gin.Context) {
 	})
 }
 
+// @Summary Get all cart items
+// @Security ApiKeyAuth
+// @Tags cart
+// @Description Получить все товары в корзине пользователя
+// @ID get-cart
+// @Produce  json
+// @Success 200 {object} GetAllCartItemResponse
+// @Failure 401 {object} handler.Error
+// @Failure 500 {object} handler.Error
+// @Router /api/cart [get]
 func (h *Handler) getCart(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {
@@ -61,6 +95,21 @@ func (h *Handler) getCart(c *gin.Context) {
 		Data: cartItems,
 	})
 }
+
+// @Summary Update cart item
+// @Security ApiKeyAuth
+// @Tags cart
+// @Description Обновить количество товара в корзине
+// @ID update-cart-item
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Cart Item ID"
+// @Param input body models.CartUpdate true "update info"
+// @Success 200 {object} statusResponse
+// @Failure 400 {object} handler.Error
+// @Failure 401 {object} handler.Error
+// @Failure 500 {object} handler.Error
+// @Router /api/cart/{id} [put]
 func (h *Handler) updateCartItem(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {
@@ -82,6 +131,18 @@ func (h *Handler) updateCartItem(c *gin.Context) {
 		Status: "ok",
 	})
 }
+
+// @Summary Delete cart item
+// @Security ApiKeyAuth
+// @Tags cart
+// @Description Удалить товар из корзины
+// @ID delete-cart-item
+// @Produce  json
+// @Param id path string true "Cart Item ID"
+// @Success 200 {object} statusResponse
+// @Failure 401 {object} handler.Error
+// @Failure 500 {object} handler.Error
+// @Router /api/cart/{id} [delete]
 func (h *Handler) deleteCartItem(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {

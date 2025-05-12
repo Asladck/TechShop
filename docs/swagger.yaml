@@ -1,0 +1,871 @@
+basePath: /
+definitions:
+  handler.Error:
+    properties:
+      message:
+        type: string
+    type: object
+  handler.GetAllCartItemResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.Cart'
+        type: array
+    type: object
+  handler.GetCartItemResponse:
+    properties:
+      data:
+        $ref: '#/definitions/models.Cart'
+    type: object
+  handler.OrderIdResponse:
+    properties:
+      data:
+        $ref: '#/definitions/models.Order'
+    type: object
+  handler.getAllItemResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.Item'
+        type: array
+    type: object
+  handler.getItemResponse:
+    properties:
+      data:
+        $ref: '#/definitions/models.Item'
+    type: object
+  handler.getOrdersResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.Order'
+        type: array
+    type: object
+  handler.getWishItemsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.Item'
+        type: array
+    type: object
+  handler.refreshInput:
+    properties:
+      refresh_token:
+        type: string
+    required:
+    - refresh_token
+    type: object
+  handler.signInInput:
+    properties:
+      email:
+        type: string
+      password_hash:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password_hash
+    - username
+    type: object
+  handler.statusFloat:
+    properties:
+      status:
+        type: number
+    type: object
+  handler.statusResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  models.Cart:
+    properties:
+      cart_id:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      item_count:
+        type: integer
+      item_created_at:
+        type: string
+      item_id:
+        type: string
+      item_updated_at:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    required:
+    - item_count
+    - item_id
+    - price
+    - title
+    type: object
+  models.CartItem:
+    properties:
+      cart_id:
+        type: string
+      created_at:
+        type: string
+      item_count:
+        type: integer
+      item_id:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    required:
+    - item_count
+    - item_id
+    type: object
+  models.CartUpdate:
+    properties:
+      item_count:
+        type: integer
+    required:
+    - item_count
+    type: object
+  models.Item:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      item_created_at:
+        type: string
+      item_updated_at:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+      title:
+        type: string
+    required:
+    - price
+    - title
+    type: object
+  models.Order:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      item_count:
+        description: ordered, delivering, delivered, cancelled
+        type: integer
+      item_id:
+        type: string
+      status:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.Stock:
+    properties:
+      stock:
+        type: integer
+    required:
+    - stock
+    type: object
+  models.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      password_hash:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - name
+    - password_hash
+    - username
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Документация API для интернет-магазина TechShop
+  title: TechShop API
+  version: "1.0"
+paths:
+  /api/buy/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Купить конкретный товар (из корзины или напрямую)
+      operationId: buy-one-item
+      parameters:
+      - description: Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Stock information
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.Stock'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Buy single item
+      tags:
+      - buy
+  /api/cart:
+    get:
+      description: Получить все товары в корзине пользователя
+      operationId: get-cart
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.GetAllCartItemResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all cart items
+      tags:
+      - cart
+    post:
+      consumes:
+      - application/json
+      description: Добавить товар в корзину пользователя
+      operationId: add-to-cart
+      parameters:
+      - description: item info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.CartItem'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns cart ID
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Add item to cart
+      tags:
+      - cart
+  /api/cart/{id}:
+    delete:
+      description: Удалить товар из корзины
+      operationId: delete-cart-item
+      parameters:
+      - description: Cart Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete cart item
+      tags:
+      - cart
+    get:
+      description: Получить конкретный товар из корзины
+      operationId: get-cart-item
+      parameters:
+      - description: Cart Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.GetCartItemResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get cart item by ID
+      tags:
+      - cart
+    put:
+      consumes:
+      - application/json
+      description: Обновить количество товара в корзине
+      operationId: update-cart-item
+      parameters:
+      - description: Cart Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: update info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.CartUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Update cart item
+      tags:
+      - cart
+  /api/cart/price:
+    get:
+      description: Получить общую стоимость товаров в корзине
+      operationId: get-price-cart
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.statusFloat'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get total price in cart
+      tags:
+      - buy
+  /api/order:
+    get:
+      description: Получить все заказы пользователя
+      operationId: get-orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.getOrdersResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all orders
+      tags:
+      - order
+  /api/order/{id}:
+    get:
+      description: Получить конкретный заказ по ID
+      operationId: get-order-by-id
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.OrderIdResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get order by ID
+      tags:
+      - order
+  /api/order/{id}/cancel:
+    post:
+      description: Отменить заказ
+      operationId: cancel-order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Cancel order
+      tags:
+      - order
+  /api/order/{id}/delivered:
+    post:
+      description: Отметить заказ как "доставленный"
+      operationId: delivered-order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Mark order as delivered
+      tags:
+      - order
+  /api/order/{id}/delivering:
+    post:
+      description: Отметить заказ как "в процессе доставки"
+      operationId: delivering-order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Mark order as delivering
+      tags:
+      - order
+  /api/order/create:
+    post:
+      description: Создать заказы для всех товаров в корзине
+      operationId: create-orders-from-cart
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Create orders from cart
+      tags:
+      - order
+  /api/order/create/{id}:
+    post:
+      description: Создать заказ из конкретного товара в корзине
+      operationId: create-order-from-cart
+      parameters:
+      - description: Cart Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Create order from cart item
+      tags:
+      - order
+  /api/wishlist:
+    get:
+      description: Получить вишлист пользователя
+      operationId: get-
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.getWishItemsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      - ApiKeyAuth: []
+      summary: Get user's wishlist
+      tags:
+      - wishlist
+  /api/wishlist/{id}:
+    delete:
+      description: Удалить товар из вишлиста пользователя
+      operationId: delete-from-wishlist
+      parameters:
+      - description: Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      - ApiKeyAuth: []
+      summary: Delete item from wishlist
+      tags:
+      - wishlist
+    post:
+      consumes:
+      - application/json
+      description: Добавить товар в вишлист пользователя
+      operationId: add-to-wishlist
+      parameters:
+      - description: Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      - ApiKeyAuth: []
+      summary: Add item to wishlist
+      tags:
+      - wishlist
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Генерирует новый access токен по refresh токену
+      parameters:
+      - description: Refresh токен
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.refreshInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Обновление Access токена
+      tags:
+      - auth
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Возвращает access и refresh токены
+      parameters:
+      - description: Данные для входа
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.signInInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Авторизация пользователя
+      tags:
+      - auth
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Создаёт нового пользователя и возвращает его ID
+      parameters:
+      - description: Информация о пользователе
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Регистрация пользователя
+      tags:
+      - auth
+  /items:
+    get:
+      description: Возвращает список всех товаров
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.getAllItemResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Получить все товары
+      tags:
+      - items
+  /items/{id}:
+    get:
+      description: Возвращает один товар по его идентификатору
+      parameters:
+      - description: Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.getItemResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Получить товар по ID
+      tags:
+      - items
+securityDefinitions:
+  ApiKeyAuth:
+    description: Type "Bearer" followed by a space and your API token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

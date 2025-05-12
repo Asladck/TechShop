@@ -1,8 +1,11 @@
 package handler
 
 import (
+	_ "TechShop/docs"
 	"TechShop/pkg/service"
 	"github.com/gin-gonic/gin"
+	files "github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
 )
 
 type Handler struct {
@@ -14,7 +17,7 @@ func NewHandler(services *service.Service) *Handler {
 }
 func (h *Handler) InitRouter() *gin.Engine {
 	router := gin.New()
-
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(files.Handler))
 	auth := router.Group("/auth")
 	{
 		auth.POST("/sign-up", h.signUp)
@@ -55,8 +58,8 @@ func (h *Handler) InitRouter() *gin.Engine {
 		orders := api.Group("/order")
 		{
 			orders.GET("/", h.getOrders) // query ?isActive=true/false / {itemId, itemCount}
-			orders.POST("/cart", h.createOrdersFromCart)
-			orders.POST("/cart/:id", h.createOrderFromCart)
+			orders.POST("/create", h.createOrdersFromCart)
+			orders.POST("/create/:id", h.createOrderFromCart)
 			orders.GET("/:id", h.getOrderById)
 			orders.POST("/:id/cancel", h.cancelOrder)
 			orders.POST("/:id/delivered", h.deliveredOrder)

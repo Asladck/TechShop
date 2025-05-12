@@ -6,6 +6,16 @@ import (
 	"net/http"
 )
 
+// @Summary Get total price in cart
+// @Security ApiKeyAuth
+// @Tags buy
+// @Description Получить общую стоимость товаров в корзине
+// @ID get-price-cart
+// @Produce json
+// @Success 200 {object} statusFloat
+// @Failure 401 {object} handler.Error
+// @Failure 500 {object} handler.Error
+// @Router /api/cart/price [get]
 func (h *Handler) getPriceInCart(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {
@@ -22,6 +32,21 @@ func (h *Handler) getPriceInCart(c *gin.Context) {
 		Status: total,
 	})
 }
+
+// @Summary Buy single item
+// @Security ApiKeyAuth
+// @Tags buy
+// @Description Купить конкретный товар (из корзины или напрямую)
+// @ID buy-one-item
+// @Accept json
+// @Produce json
+// @Param id path string true "Item ID"
+// @Param input body models.Stock true "Stock information"
+// @Success 200 {object} statusResponse
+// @Failure 400 {object} handler.Error
+// @Failure 401 {object} handler.Error
+// @Failure 500 {object} handler.Error
+// @Router /api/buy/{id} [post]
 func (h *Handler) buyOneItem(c *gin.Context) {
 	var stock models.Stock
 	userId, err := getUserId(c)

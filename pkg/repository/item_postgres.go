@@ -64,9 +64,7 @@ func (r *TechItemPostgres) GetItemById(itemId string) (models.Item, error) {
 	return item, nil
 }
 func (r *TechItemPostgres) GetItemStock(itemId string) (int, error) {
-
 	var stock int
-
 	cache := fmt.Sprintf("stock:%s", itemId)
 	cachedData, err := r.redis.Get(context.Background(), cache).Result()
 	if err == nil {

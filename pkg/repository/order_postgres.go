@@ -2,16 +2,19 @@ package repository
 
 import (
 	"TechShop/models"
+	"context"
 	"fmt"
+	"github.com/go-redis/redis/v8"
 	"github.com/jmoiron/sqlx"
 )
 
 type TechOrderPostgres struct {
-	db *sqlx.DB
+	db    *sqlx.DB
+	redis *redis.Client
 }
 
-func NewTechOrderPostgres(db *sqlx.DB) *TechOrderPostgres {
-	return &TechOrderPostgres{db: db}
+func NewTechOrderPostgres(db *sqlx.DB, client *redis.Client) *TechOrderPostgres {
+	return &TechOrderPostgres{db: db, redis: client}
 }
 func (r *TechOrderPostgres) GetOrders(userId string) ([]models.Order, error) {
 	var orders []models.Order
@@ -82,6 +85,7 @@ func (r *TechOrderPostgres) CreateOrdersFromCart(userId string) error {
 	if err != nil {
 		return err
 	}
+	_ = r.redis.Del(context.Background(), fmt.Sprintf("orders:user:%s", userId)).Err()
 
 	return nil
 }
@@ -130,6 +134,8 @@ func (r *TechOrderPostgres) CreateOrderFromCart(userId, cartId string) error {
 	if err != nil {
 		return err
 	}
+	_ = r.redis.Del(context.Background(), fmt.Sprintf("cart:user:%s", userId)).Err()
+	_ = r.redis.Del(context.Background(), fmt.Sprintf("orders:user:%s", userId)).Err()
 
 	return nil
 }
@@ -158,6 +164,9 @@ func (r *TechOrderPostgres) CancelOrder(userId, orderId string) error {
 	if err != nil {
 		return err
 	}
+	_ = r.redis.Del(context.Background(), fmt.Sprintf("order:user:%s:%s", userId, orderId)).Err()
+	_ = r.redis.Del(context.Background(), fmt.Sprintf("orders:user:%s", userId)).Err()
+
 	return nil
 }
 func (r *TechOrderPostgres) DeliveringOrder(userId, orderId string) error {
@@ -166,6 +175,9 @@ func (r *TechOrderPostgres) DeliveringOrder(userId, orderId string) error {
 	if err != nil {
 		return err
 	}
+	_ = r.redis.Del(context.Background(), fmt.Sprintf("order:user:%s:%s", userId, orderId)).Err()
+	_ = r.redis.Del(context.Background(), fmt.Sprintf("orders:user:%s", userId)).Err()
+
 	return nil
 }
 func (r *TechOrderPostgres) DeliveredOrder(userId, orderId string) error {
@@ -174,5 +186,7 @@ func (r *TechOrderPostgres) DeliveredOrder(userId, orderId string) error {
 	if err != nil {
 		return err
 	}
+	_ = r.redis.Del(context.Background(), fmt.Sprintf("order:user:%s:%s", userId, orderId)).Err()
+	_ = r.redis.Del(context.Background(), fmt.Sprintf("orders:user:%s", userId)).Err()
 	return nil
 }
